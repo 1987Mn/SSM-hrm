@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+	<!--filter-->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<!--		安全管理器-->
+		<property name="securityManager" ref="securityManager"/>
+		<!--		判断需要登录时，会调用这里的路径-->
+		<property name="loginUrl" value="/login"/>
+		<!--		判定没有权限时，会调用这里的路径-->
+		<property name="unauthorizedUrl" value="/login"/>
+		<!--		权限过滤，配置什么样的路径需要什么样的身份/权限才能进入-->
+		<property name="filterChainDefinitions">
+			<value>
+				WEB-INF/jsp/** = user
+			</value>
+		</property>
+		<!--	登录成功后跳转的路径	-->
+		<property name="successUrl" value="/main"/>
+	</bean>
+	<!--	配置 安全管理器 securityManager-->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="userRealm"/>
+	</bean>
+	<!-- 配置 realm-->
+	<bean id="userRealm" class="com.lzw.hrmsys.util.shiro.UserRealm">
+		<property name="credentialsMatcher" ref="credentialsMatcher"></property>
+	</bean>
+	<bean id="credentialsMatcher" class="org.apache.shiro.authc.credential.HashedCredentialsMatcher" >
+		<property name="hashAlgorithmName" value="md5"></property>
+	</bean>
+</beans>	
